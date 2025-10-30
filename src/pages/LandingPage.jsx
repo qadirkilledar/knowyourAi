@@ -10,9 +10,6 @@ import {
   Zap,
   Users,
   Eye,
-  Heart,
-  Share2,
-  ArrowRight,
   Mail,
   Phone,
   MessageCircle,
@@ -22,19 +19,20 @@ import {
   Facebook,
   Calendar,
   CheckCircle,
+  Send,
+  Sparkles,
 } from "lucide-react";
-
-const API_URL = "http://localhost:5001/api";
+import { API_URL } from "./config";
 
 const Studio = () => {
   const [activeStudio, setActiveStudio] = useState(null);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [studiosData, setStudiosData] = useState([]);
-  const [likedStudios, setLikedStudios] = useState([]);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [loading, setLoading] = useState(true);
   const heroRef = useRef(null);
 
+  // Mouse position tracking for magnetic cursor effect (desktop only)
   useEffect(() => {
     const handleMouseMove = (e) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
@@ -43,11 +41,12 @@ const Studio = () => {
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
-  // Fetch studios from API
+  // Fetch studios data on mount
   useEffect(() => {
     fetchStudios();
   }, []);
 
+  // Fetch studios from API
   const fetchStudios = async () => {
     try {
       const response = await fetch(`${API_URL}/studios`);
@@ -56,13 +55,14 @@ const Studio = () => {
         setStudiosData(data.data);
       }
     } catch (error) {
+      // Production: Log errors minimally
       console.error("Error fetching studios:", error);
     } finally {
       setLoading(false);
     }
   };
 
-  // Load Tally embed script
+  // Load Tally form script dynamically
   useEffect(() => {
     const script = document.createElement("script");
     script.src = "https://tally.so/widgets/embed.js";
@@ -76,18 +76,6 @@ const Studio = () => {
     };
   }, []);
 
-  const toggleLike = async (id) => {
-    try {
-      await fetch(`${API_URL}/studios/${id}/like`, { method: "PUT" });
-      setLikedStudios((prev) =>
-        prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
-      );
-      fetchStudios(); // Refresh data
-    } catch (error) {
-      console.error("Error liking studio:", error);
-    }
-  };
-
   return (
     <div className="bg-[#F0F0F0] min-h-screen">
       {/* Magnetic Cursor Effect - Desktop Only */}
@@ -99,13 +87,22 @@ const Studio = () => {
           transform: "translate(-50%, -50%)",
         }}
       />
-      {/* Floating Navigation */}
+
+      {/* Floating Navigation - Desktop Only  */}
       <nav className="fixed top-0 left-0 right-0 z-40 mix-blend-difference">
         <div className="container mx-auto px-4 sm:px-6 lg:px-12 py-4 sm:py-6">
           <div className="flex items-center justify-between">
-            <div className="text-2xl sm:text-3xl font-black tracking-tighter text-white">
-              R—STUDIO
+            {/* LOGO - SUPER STANDOUT */}
+            <div className="relative group">
+              <div className="absolute -inset-2 bg-gradient-to-r from-[#3D4C3A] via-[#5a7a54] to-[#3D4C3A] rounded-2xl blur-xl opacity-30 group-hover:opacity-50 transition-opacity"></div>
+              <div className="relative text-3xl sm:text-4xl lg:text-5xl font-black tracking-tighter">
+                <span className="bg-gradient-to-r from-white via-gray-100 to-white bg-clip-text text-transparent animate-gradient-flow drop-shadow-[0_0_30px_rgba(255,255,255,0.5)]">
+                  R—STUDIO
+                </span>
+              </div>
             </div>
+
+            {/* Desktop Navigation Only */}
             <div className="hidden lg:flex items-center gap-8 xl:gap-12">
               <a
                 href="#properties"
@@ -114,22 +111,12 @@ const Studio = () => {
                 Properties
               </a>
               <a
-                href="#about"
-                className="text-white font-medium hover:opacity-60 transition-opacity"
-              >
-                About
-              </a>
-              <a
                 href="#contact"
                 className="text-white font-medium hover:opacity-60 transition-opacity"
               >
                 Contact
               </a>
             </div>
-            <button className="lg:hidden w-10 h-10 flex flex-col items-center justify-center gap-1.5">
-              <span className="w-6 h-0.5 bg-white"></span>
-              <span className="w-6 h-0.5 bg-white"></span>
-            </button>
           </div>
         </div>
       </nav>
@@ -161,22 +148,21 @@ const Studio = () => {
         <div className="relative h-full flex items-center">
           <div className="container mx-auto px-4 sm:px-6 lg:px-12">
             <div className="max-w-5xl">
-              {/* Main Title */}
               <div className="mb-6 sm:mb-8 space-y-2 sm:space-y-4">
                 <div className="overflow-hidden">
-                  <h1 className="text-[18vw] sm:text-[15vw] lg:text-[10rem] font-black leading-none text-white tracking-tighter animate-slide-in-left">
+                  <h1 className="text-[18vw] sm:text-[10vw] lg:text-[6rem] font-extrabold leading-none text-white tracking-tighter animate-slide-in-left">
                     LIVE
                   </h1>
                 </div>
                 <div className="overflow-hidden">
-                  <h1 className="text-[18vw] sm:text-[15vw] lg:text-[10rem] font-black leading-none text-transparent bg-clip-text bg-gradient-to-r from-white to-white/40 tracking-tighter animate-slide-in-right animation-delay-200">
+                  <h1 className="text-[18vw] sm:text-[10vw] lg:text-[6rem] font-extrabold leading-none text-transparent bg-clip-text bg-gradient-to-r from-white to-white/40 tracking-tighter animate-slide-in-right animation-delay-200">
                     BOLD
                   </h1>
                 </div>
               </div>
-              {/* Description */}
+
               <div className="max-w-xl mb-8 sm:mb-12 animate-fade-in animation-delay-400">
-                <p className="text-lg sm:text-xl lg:text-2xl text-white/80 leading-relaxed mb-6 sm:mb-8">
+                <p className="text-l sm:text-xl lg:text-2xl text-white/80 leading-relaxed mb-6 sm:mb-8">
                   Discover London's most exceptional studio apartments. Where
                   architectural innovation meets refined living.
                 </p>
@@ -187,8 +173,8 @@ const Studio = () => {
                   >
                     <span className="relative z-10 flex items-center justify-center gap-2">
                       Explore Studios
-                      <ArrowRight
-                        className="group-hover:translate-x-1 transition-transform"
+                      <Sparkles
+                        className="group-hover:rotate-12 transition-transform"
                         size={20}
                       />
                     </span>
@@ -202,7 +188,6 @@ const Studio = () => {
                   </a>
                 </div>
               </div>
-              {/* Stats Ticker - Enhanced with darker background */}
               <div className="grid grid-cols-3 gap-4 sm:gap-6 lg:gap-8 animate-fade-in animation-delay-600">
                 {[
                   {
@@ -228,7 +213,6 @@ const Studio = () => {
             </div>
           </div>
         </div>
-        {/* Scroll Indicator */}
         <div className="absolute bottom-8 sm:bottom-12 left-1/2 -translate-x-1/2">
           <div className="flex flex-col items-center gap-3 animate-bounce-smooth">
             <span className="text-white/60 text-xs tracking-[0.3em] uppercase">
@@ -237,14 +221,13 @@ const Studio = () => {
             <ChevronDown className="text-white/60" size={24} />
           </div>
         </div>
-        {/* Decorative Elements */}
         <div className="absolute top-1/4 right-12 w-20 sm:w-32 h-20 sm:h-32 border border-white/10 rounded-full animate-spin-slow hidden lg:block"></div>
         <div className="absolute bottom-1/4 left-12 w-16 sm:w-20 h-16 sm:h-20 border border-white/10 rotate-45 animate-float hidden lg:block"></div>
       </section>
 
-      {/* Marquee Section */}
+      {/* Marquee Section  */}
       <div className="py-6 sm:py-8 bg-black overflow-hidden">
-        <div className="flex whitespace-nowrap animate-marquee">
+        <div className="flex whitespace-nowrap animate-marquee-fast">
           {[...Array(3)].map((_, i) => (
             <div key={i} className="flex items-center">
               <span className="text-white/20 text-xl sm:text-2xl lg:text-4xl font-black mx-6 sm:mx-8">
@@ -277,7 +260,6 @@ const Studio = () => {
         </div>
         <div className="relative container mx-auto px-4 sm:px-6 lg:px-12">
           <div className="grid lg:grid-cols-2 gap-12 sm:gap-16 lg:gap-24 items-center">
-            {/* Left Content */}
             <div className="space-y-6 sm:space-y-8">
               <div>
                 <span className="inline-block px-4 py-2 bg-[#3D4C3A] text-white text-xs font-bold tracking-wider rounded-full mb-4 sm:mb-6">
@@ -294,7 +276,6 @@ const Studio = () => {
                   London's most desirable locations.
                 </p>
               </div>
-              {/* Feature Cards */}
               <div className="space-y-3 sm:space-y-4">
                 {[
                   {
@@ -332,7 +313,6 @@ const Studio = () => {
                 ))}
               </div>
             </div>
-            {/* Right Image Grid */}
             <div className="relative">
               <div className="grid grid-cols-2 gap-4 sm:gap-6">
                 <div className="space-y-4 sm:space-y-6">
@@ -368,7 +348,6 @@ const Studio = () => {
                   </div>
                 </div>
               </div>
-              {/* Floating Badge */}
               <div className="absolute -bottom-6 sm:-bottom-8 -left-4 sm:-left-8 bg-black text-white p-6 sm:p-8 rounded-2xl sm:rounded-3xl shadow-2xl">
                 <div className="text-4xl sm:text-5xl font-black mb-2">5+</div>
                 <div className="text-xs sm:text-sm opacity-80">
@@ -382,10 +361,9 @@ const Studio = () => {
         </div>
       </section>
 
-      {/* Studios Section */}
+      {/* Studios Section  */}
       <section id="properties" className="py-16 sm:py-24 lg:py-40 bg-[#F0F0F0]">
         <div className="container mx-auto px-4 sm:px-6 lg:px-12">
-          {/* Header */}
           <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 sm:gap-8 mb-12 sm:mb-16">
             <div>
               <span className="inline-block px-4 py-2 bg-black text-white text-xs font-bold tracking-wider rounded-full mb-4 sm:mb-6">
@@ -399,7 +377,6 @@ const Studio = () => {
             </div>
           </div>
 
-          {/* Loading State */}
           {loading && (
             <div className="text-center py-20">
               <div className="w-16 h-16 border-4 border-[#3D4C3A] border-t-transparent rounded-full animate-spin mx-auto"></div>
@@ -409,7 +386,6 @@ const Studio = () => {
             </div>
           )}
 
-          {/* Grid */}
           {!loading && (
             <div className="grid sm:grid-cols-2 gap-6 sm:gap-8 lg:gap-12">
               {studiosData.map((studio, idx) => (
@@ -419,12 +395,7 @@ const Studio = () => {
                   onClick={() => setActiveStudio(studio)}
                 >
                   <div className="relative bg-white rounded-2xl sm:rounded-[2rem] overflow-hidden hover:shadow-2xl transition-all duration-700">
-                    {/* Image */}
-                    <div
-                      className={`relative overflow-hidden ${
-                        idx % 3 === 0 ? "aspect-[4/5]" : "aspect-square"
-                      }`}
-                    >
+                    <div className="relative overflow-hidden aspect-[4/3] bg-gray-100">
                       <img
                         src={
                           studio.images && studio.images[0]
@@ -432,47 +403,21 @@ const Studio = () => {
                             : "https://via.placeholder.com/600x600?text=No+Image"
                         }
                         alt={studio.name}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                        className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-700"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
-                      {/* Badges */}
-                      <div className="absolute top-4 sm:top-6 left-4 sm:left-6 right-4 sm:right-6 flex items-start justify-between">
-                        <div className="space-y-2">
-                          {studio.featured && (
-                            <div className="px-3 sm:px-4 py-1.5 sm:py-2 bg-white/90 backdrop-blur-sm rounded-full">
-                              <span className="text-[#3D4C3A] text-[10px] sm:text-xs font-black tracking-wider">
-                                FEATURED
-                              </span>
-                            </div>
-                          )}
-                          <div className="px-3 sm:px-4 py-1.5 sm:py-2 bg-black/80 backdrop-blur-sm rounded-full">
-                            <span className="text-white text-[10px] sm:text-xs font-bold">
-                              {studio.type}
+
+                      {/* Only Featured Badge */}
+                      {studio.featured && (
+                        <div className="absolute top-4 sm:top-6 left-4 sm:left-6">
+                          <div className="px-3 sm:px-4 py-1.5 sm:py-2 bg-white/90 backdrop-blur-sm rounded-full">
+                            <span className="text-[#3D4C3A] text-[10px] sm:text-xs font-black tracking-wider">
+                              FEATURED
                             </span>
                           </div>
                         </div>
-                        <div className="flex gap-2">
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              toggleLike(studio._id);
-                            }}
-                            className="w-9 h-9 sm:w-11 sm:h-11 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center hover:scale-110 transition-transform"
-                          >
-                            <Heart
-                              size={16}
-                              className={
-                                likedStudios.includes(studio._id)
-                                  ? "fill-red-500 text-red-500"
-                                  : "text-[#3D4C3A]"
-                              }
-                            />
-                          </button>
-                          <button className="w-9 h-9 sm:w-11 sm:h-11 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center hover:scale-110 transition-transform">
-                            <Share2 size={16} className="text-[#3D4C3A]" />
-                          </button>
-                        </div>
-                      </div>
+                      )}
+
                       {/* Bottom Info */}
                       <div className="absolute bottom-4 sm:bottom-6 left-4 sm:left-6 right-4 sm:right-6">
                         <h3 className="text-2xl sm:text-3xl font-black text-white mb-2">
@@ -502,16 +447,31 @@ const Studio = () => {
                           </div>
                         </div>
                       </div>
-                      {/* Hover Overlay */}
-                      <div className="absolute inset-0 bg-[#3D4C3A]/95 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                        <div className="text-center text-white space-y-4">
-                          <Eye size={40} className="mx-auto" />
-                          <div className="text-xl sm:text-2xl font-bold">
-                            View Details
+
+                      {/*  Hover Overlay */}
+                      <div className="absolute inset-0 bg-gradient-to-br from-[#3D4C3A] via-[#2d3d2a] to-black opacity-0 group-hover:opacity-95 transition-all duration-500 flex items-center justify-center">
+                        <div className="text-center text-white space-y-6 transform scale-75 group-hover:scale-100 transition-transform duration-500">
+                          <div className="relative">
+                            <div className="absolute inset-0 animate-ping">
+                              <Eye
+                                size={48}
+                                className="mx-auto text-white/30"
+                              />
+                            </div>
+                            <Eye size={48} className="mx-auto relative" />
+                          </div>
+                          <div className="space-y-2">
+                            <div className="text-2xl sm:text-3xl font-black">
+                              View Details
+                            </div>
+                            <div className="text-sm text-white/70">
+                              Explore this premium studio
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
+
                     {/* Card Content */}
                     <div className="p-6 sm:p-8 space-y-4">
                       <p className="text-[#3D4C3A]/70 line-clamp-2 leading-relaxed text-sm sm:text-base">
@@ -526,9 +486,9 @@ const Studio = () => {
                         </div>
                         <div className="flex items-center gap-2 text-black font-bold group-hover:gap-4 transition-all text-sm sm:text-base">
                           Details
-                          <ArrowRight
+                          <Sparkles
                             size={18}
-                            className="group-hover:translate-x-1 transition-transform"
+                            className="group-hover:rotate-12 transition-transform"
                           />
                         </div>
                       </div>
@@ -539,7 +499,6 @@ const Studio = () => {
             </div>
           )}
 
-          {/* Empty State */}
           {!loading && studiosData.length === 0 && (
             <div className="text-center py-20">
               <h3 className="text-2xl font-black text-[#3D4C3A] mb-2">
@@ -556,7 +515,6 @@ const Studio = () => {
       {/* Studio Detail Modal */}
       {activeStudio && (
         <div className="fixed inset-0 bg-black z-50 overflow-y-auto">
-          {/* Close Button */}
           <button
             onClick={() => setActiveStudio(null)}
             className="fixed top-4 right-4 sm:top-6 sm:right-6 lg:top-12 lg:right-12 z-50 w-12 h-12 sm:w-14 sm:h-14 bg-white rounded-full flex items-center justify-center hover:scale-110 transition-transform shadow-2xl group"
@@ -567,14 +525,12 @@ const Studio = () => {
             />
           </button>
 
-          {/* Desktop Layout */}
+          {/* Desktop Layout  */}
           <div className="hidden lg:grid lg:grid-cols-2 min-h-screen">
-            {/* Left: Sticky Image Gallery */}
             <div className="sticky top-0 h-screen bg-[#E0E0E0] p-12 flex flex-col">
               <div className="flex-1 flex items-center justify-center">
                 <div className="w-full max-w-2xl space-y-6">
-                  {/* Main Image */}
-                  <div className="relative aspect-[4/3] rounded-3xl overflow-hidden group">
+                  <div className="relative aspect-[4/3] rounded-3xl overflow-hidden group bg-white">
                     <img
                       src={
                         activeStudio.images && activeStudio.images[currentSlide]
@@ -582,9 +538,8 @@ const Studio = () => {
                           : "https://via.placeholder.com/800x600?text=No+Image"
                       }
                       alt={activeStudio.name}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-contain"
                     />
-                    {/* Navigation */}
                     {currentSlide > 0 && (
                       <button
                         onClick={() => setCurrentSlide((prev) => prev - 1)}
@@ -601,21 +556,19 @@ const Studio = () => {
                         <ChevronDown className="-rotate-90" size={20} />
                       </button>
                     )}
-                    {/* Counter */}
                     <div className="absolute bottom-4 right-4 px-4 py-2 bg-black/80 backdrop-blur-sm rounded-full">
                       <span className="text-white text-sm font-bold">
                         {currentSlide + 1} / {activeStudio.images?.length || 1}
                       </span>
                     </div>
                   </div>
-                  {/* Thumbnails */}
                   {activeStudio.images && activeStudio.images.length > 1 && (
                     <div className="grid grid-cols-6 gap-3">
                       {activeStudio.images.map((img, idx) => (
                         <button
                           key={idx}
                           onClick={() => setCurrentSlide(idx)}
-                          className={`aspect-square rounded-xl overflow-hidden transition-all ${
+                          className={`aspect-square rounded-xl overflow-hidden transition-all bg-white ${
                             currentSlide === idx
                               ? "ring-4 ring-white scale-110"
                               : "opacity-50 hover:opacity-100 hover:scale-105"
@@ -634,21 +587,16 @@ const Studio = () => {
               </div>
             </div>
 
-            {/* Right: Scrollable Content */}
             <div className="bg-white">
               <div className="p-12 max-w-3xl mx-auto space-y-10">
-                {/* Header */}
                 <div className="space-y-6">
-                  <div className="flex items-center gap-3">
-                    {activeStudio.featured && (
+                  {activeStudio.featured && (
+                    <div className="flex items-center gap-3">
                       <span className="px-4 py-2 bg-black text-white rounded-full text-xs font-black tracking-wider">
                         FEATURED
                       </span>
-                    )}
-                    <span className="px-4 py-2 bg-[#F0F0F0] text-[#3D4C3A] rounded-full text-xs font-bold uppercase">
-                      {activeStudio.type}
-                    </span>
-                  </div>
+                    </div>
+                  )}
                   <h1 className="text-5xl lg:text-6xl font-black text-[#3D4C3A] leading-tight">
                     {activeStudio.name}
                   </h1>
@@ -658,7 +606,6 @@ const Studio = () => {
                       {activeStudio.fullLocation}
                     </span>
                   </div>
-                  {/* Quick Stats */}
                   <div className="grid grid-cols-4 gap-4">
                     {[
                       {
@@ -701,7 +648,6 @@ const Studio = () => {
                   </div>
                 </div>
                 <div className="h-px bg-[#E0E0E0]"></div>
-                {/* Description */}
                 <div className="space-y-4">
                   <h3 className="text-2xl font-black text-[#3D4C3A]">
                     About This Studio
@@ -711,7 +657,6 @@ const Studio = () => {
                   </p>
                 </div>
                 <div className="h-px bg-[#E0E0E0]"></div>
-                {/* Features */}
                 {activeStudio.features && activeStudio.features.length > 0 && (
                   <>
                     <div className="space-y-4">
@@ -738,7 +683,6 @@ const Studio = () => {
                     <div className="h-px bg-[#E0E0E0]"></div>
                   </>
                 )}
-                {/* Amenities */}
                 {activeStudio.amenities &&
                   activeStudio.amenities.length > 0 && (
                     <>
@@ -760,7 +704,6 @@ const Studio = () => {
                       <div className="h-px bg-[#E0E0E0]"></div>
                     </>
                   )}
-                {/* CTAs */}
                 <div className="space-y-4">
                   <button
                     onClick={() => {
@@ -779,10 +722,6 @@ const Studio = () => {
                       size={20}
                     />
                   </button>
-                  <button className="w-full py-4 border-2 border-[#E0E0E0] text-[#3D4C3A] rounded-xl font-bold hover:border-[#3D4C3A] transition-all flex items-center justify-center gap-2">
-                    <Share2 size={18} />
-                    Share Property
-                  </button>
                 </div>
               </div>
             </div>
@@ -790,8 +729,8 @@ const Studio = () => {
 
           {/* Mobile Layout */}
           <div className="lg:hidden">
-            {/* Image Gallery */}
-            <div className="relative aspect-[4/5]">
+            {/* Image Gallery  */}
+            <div className="relative aspect-square bg-white">
               <img
                 src={
                   activeStudio.images && activeStudio.images[currentSlide]
@@ -799,13 +738,12 @@ const Studio = () => {
                     : "https://via.placeholder.com/600x800?text=No+Image"
                 }
                 alt={activeStudio.name}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-contain"
               />
-              {/* Navigation */}
               {currentSlide > 0 && (
                 <button
                   onClick={() => setCurrentSlide((prev) => prev - 1)}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center"
+                  className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg"
                 >
                   <ChevronDown className="rotate-90" size={20} />
                 </button>
@@ -813,7 +751,7 @@ const Studio = () => {
               {currentSlide < (activeStudio.images?.length || 1) - 1 && (
                 <button
                   onClick={() => setCurrentSlide((prev) => prev + 1)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg"
                 >
                   <ChevronDown className="-rotate-90" size={20} />
                 </button>
@@ -824,16 +762,17 @@ const Studio = () => {
                 </span>
               </div>
             </div>
-            {/* Thumbnails */}
+
+            {/* Thumbnails  */}
             {activeStudio.images && activeStudio.images.length > 1 && (
-              <div className="flex gap-2 p-4 overflow-x-auto scrollbar-hide bg-black">
+              <div className="flex gap-3 p-4 overflow-x-auto scrollbar-hide bg-black">
                 {activeStudio.images.map((img, idx) => (
                   <button
                     key={idx}
                     onClick={() => setCurrentSlide(idx)}
-                    className={`flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden transition-all ${
+                    className={`flex-shrink-0 w-24 h-24 rounded-xl overflow-hidden transition-all bg-white ${
                       currentSlide === idx
-                        ? "ring-2 ring-white scale-105"
+                        ? "ring-4 ring-white scale-105"
                         : "opacity-50"
                     }`}
                   >
@@ -846,19 +785,17 @@ const Studio = () => {
                 ))}
               </div>
             )}
+
             {/* Content */}
             <div className="bg-white rounded-t-3xl -mt-8 relative z-10 p-6 space-y-6">
               <div className="space-y-4">
-                <div className="flex items-center gap-2">
-                  {activeStudio.featured && (
+                {activeStudio.featured && (
+                  <div className="flex items-center gap-2">
                     <span className="px-3 py-1 bg-black text-white rounded-full text-xs font-black">
                       FEATURED
                     </span>
-                  )}
-                  <span className="px-3 py-1 bg-[#F0F0F0] text-[#3D4C3A] rounded-full text-xs font-bold uppercase">
-                    {activeStudio.type}
-                  </span>
-                </div>
+                  </div>
+                )}
                 <h1 className="text-3xl font-black text-[#3D4C3A]">
                   {activeStudio.name}
                 </h1>
@@ -866,50 +803,53 @@ const Studio = () => {
                   <MapPin size={18} />
                   <span className="text-sm">{activeStudio.fullLocation}</span>
                 </div>
-                {/* Quick Stats */}
-                <div className="grid grid-cols-4 gap-2">
+
+                {/* IMPROVED Stats  */}
+                <div className="grid grid-cols-2 gap-3">
                   {[
-                    { label: "Size", value: `${activeStudio.size}` },
+                    { label: "Size", value: `${activeStudio.size} ft²` },
                     { label: "Beds", value: activeStudio.beds },
                     { label: "Baths", value: activeStudio.baths },
-                    { label: "Type", value: activeStudio.type },
+                    { label: "Available", value: activeStudio.available },
                   ].map((stat, idx) => (
                     <div
                       key={idx}
-                      className="p-3 bg-[#F0F0F0] rounded-xl text-center"
+                      className="p-4 bg-[#F0F0F0] rounded-xl text-center"
                     >
-                      <div className="text-lg font-black text-[#3D4C3A]">
+                      <div className="text-xl font-black text-[#3D4C3A] mb-1 truncate">
                         {stat.value}
                       </div>
-                      <div className="text-[10px] text-[#3D4C3A]/60 font-medium">
+                      <div className="text-xs text-[#3D4C3A]/60 font-medium">
                         {stat.label}
                       </div>
                     </div>
                   ))}
                 </div>
               </div>
+
               <div className="space-y-3">
                 <h3 className="text-xl font-black text-[#3D4C3A]">About</h3>
                 <p className="text-[#3D4C3A]/70 leading-relaxed">
                   {activeStudio.longDescription}
                 </p>
               </div>
+
               {activeStudio.features && activeStudio.features.length > 0 && (
                 <div className="space-y-3">
                   <h3 className="text-xl font-black text-[#3D4C3A]">
                     Features
                   </h3>
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="space-y-2">
                     {activeStudio.features.map((feature, idx) => (
                       <div
                         key={idx}
-                        className="flex items-center gap-2 p-3 bg-[#F0F0F0] rounded-lg"
+                        className="flex items-center gap-3 p-3 bg-[#F0F0F0] rounded-lg"
                       >
                         <CheckCircle
-                          size={14}
+                          size={16}
                           className="text-[#3D4C3A] flex-shrink-0"
                         />
-                        <span className="text-xs text-[#3D4C3A] font-medium">
+                        <span className="text-sm text-[#3D4C3A] font-medium">
                           {feature}
                         </span>
                       </div>
@@ -917,8 +857,27 @@ const Studio = () => {
                   </div>
                 </div>
               )}
-              {/* CTAs */}
-              <div className="space-y-3">
+
+              {/* ADDED Building Amenities */}
+              {activeStudio.amenities && activeStudio.amenities.length > 0 && (
+                <div className="space-y-3">
+                  <h3 className="text-xl font-black text-[#3D4C3A]">
+                    Building Amenities
+                  </h3>
+                  <div className="flex flex-wrap gap-2">
+                    {activeStudio.amenities.map((amenity, idx) => (
+                      <div
+                        key={idx}
+                        className="px-3 py-2 bg-[#F0F0F0] border-2 border-[#E0E0E0] rounded-full text-[#3D4C3A] font-medium text-sm"
+                      >
+                        {amenity}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <div className="space-y-3 pt-4">
                 <button
                   onClick={() => {
                     setActiveStudio(null);
@@ -928,13 +887,10 @@ const Studio = () => {
                         ?.scrollIntoView({ behavior: "smooth" });
                     }, 300);
                   }}
-                  className="w-full py-4 bg-black text-white rounded-2xl font-bold"
+                  className="w-full py-4 bg-black text-white rounded-2xl font-bold flex items-center justify-center gap-2"
                 >
+                  <Calendar size={20} />
                   Book Viewing
-                </button>
-                <button className="w-full py-3 border-2 border-[#E0E0E0] text-[#3D4C3A] rounded-xl font-bold text-sm flex items-center justify-center gap-2">
-                  <Share2 size={16} />
-                  Share Property
                 </button>
               </div>
             </div>
@@ -943,25 +899,34 @@ const Studio = () => {
       )}
 
       {/* Contact Section */}
-      <section id="contact" className="py-16 sm:py-24 lg:py-40 bg-white">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-12">
-          <div className="max-w-5xl mx-auto">
+      <section
+        id="contact"
+        className="relative py-16 sm:py-24 lg:py-32 bg-[#F0F0F0] overflow-hidden"
+      >
+        {/* Subtle decorative elements */}
+        <div className="absolute top-20 right-10 w-72 h-72 bg-[#3D4C3A]/5 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-20 left-10 w-96 h-96 bg-[#3D4C3A]/5 rounded-full blur-3xl"></div>
+
+        <div className="container mx-auto px-4 sm:px-6 lg:px-12 relative z-10">
+          <div className="max-w-4xl mx-auto">
             {/* Header */}
             <div className="text-center mb-12 sm:mb-16">
-              <span className="inline-block px-4 py-2 bg-[#3D4C3A] text-white text-xs font-bold tracking-wider rounded-full mb-4 sm:mb-6">
+              <span className="inline-block px-4 py-2 bg-[#3D4C3A] text-white text-xs font-bold tracking-wider rounded-full mb-6">
                 GET IN TOUCH
               </span>
-              <h2 className="text-4xl sm:text-5xl lg:text-7xl font-black text-[#3D4C3A] leading-[0.9] mb-4 sm:mb-6">
+              <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black text-[#3D4C3A] leading-tight mb-6">
                 Schedule Your
                 <br />
                 Private Viewing
               </h2>
-              <p className="text-lg sm:text-xl text-[#3D4C3A]/70">
-                Complete the form below and our team will contact you within 24
+              <p className="text-lg sm:text-xl text-[#3D4C3A]/70 max-w-2xl mx-auto">
+                Fill out the form below and our team will contact you within 24
                 hours
               </p>
             </div>
-            <div className="bg-[#F0F0F0] rounded-2xl sm:rounded-[2rem] p-6 sm:p-8 lg:p-12">
+
+            {/* Form Container */}
+            <div className="bg-white rounded-3xl shadow-xl p-6 sm:p-8 lg:p-10 mb-8 sm:mb-12 border border-[#E0E0E0]">
               <iframe
                 data-tally-src="https://tally.so/embed/mJagPX?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1"
                 loading="lazy"
@@ -973,8 +938,9 @@ const Studio = () => {
                 title="Contact form"
               ></iframe>
             </div>
-            {/* Contact Info Cards */}
-            <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 mt-8 sm:mt-12">
+
+            {/* Contact Cards  */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               {[
                 {
                   icon: Mail,
@@ -990,24 +956,24 @@ const Studio = () => {
                 },
                 {
                   icon: MessageCircle,
-                  label: "Chat",
-                  value: "Live Chat Available",
+                  label: "Live Chat",
+                  value: "Available Now",
                   href: "#",
                 },
               ].map((item, idx) => (
                 <a
                   key={idx}
                   href={item.href}
-                  className="group flex items-center gap-3 sm:gap-4 p-4 sm:p-6 bg-[#F0F0F0] rounded-xl sm:rounded-2xl hover:bg-white hover:shadow-xl transition-all"
+                  className="group flex items-center gap-3 p-4 bg-white rounded-2xl border-2 border-[#E0E0E0] hover:border-[#3D4C3A] hover:shadow-lg transition-all"
                 >
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-black rounded-lg sm:rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
+                  <div className="w-12 h-12 bg-[#3D4C3A] rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
                     <item.icon className="text-white" size={20} />
                   </div>
-                  <div>
-                    <div className="text-xs font-bold text-[#3D4C3A]/60 mb-1">
+                  <div className="min-w-0 flex-1">
+                    <div className="text-xs font-bold text-[#3D4C3A]/60 mb-0.5 uppercase tracking-wide">
                       {item.label}
                     </div>
-                    <div className="font-bold text-[#3D4C3A] text-sm sm:text-base">
+                    <div className="font-bold text-[#3D4C3A] text-sm truncate">
                       {item.value}
                     </div>
                   </div>
@@ -1019,142 +985,81 @@ const Studio = () => {
       </section>
 
       {/* Footer */}
-      <footer className="relative bg-gradient-to-br from-black via-[#1a1a1a] to-black text-white py-16 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-12 overflow-hidden">
-        {/* Decorative Elements */}
-        <div className="absolute top-0 right-0 w-64 sm:w-96 h-64 sm:h-96 bg-[#3D4C3A]/10 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-0 left-0 w-64 sm:w-96 h-64 sm:h-96 bg-[#3D4C3A]/10 rounded-full blur-3xl"></div>
+      <footer className="relative bg-black text-white py-12 px-4 sm:px-6 lg:px-12 overflow-hidden">
+        {/* Subtle Background */}
+        <div className="absolute top-0 right-0 w-64 h-64 bg-[#3D4C3A]/5 rounded-full blur-3xl"></div>
+
         <div className="container mx-auto relative z-10">
-          <div className="grid lg:grid-cols-2 gap-12 sm:gap-16 mb-12 sm:mb-16">
-            {/* Left */}
-            <div className="space-y-6 sm:space-y-8">
-              <div>
-                <div className="text-5xl sm:text-6xl lg:text-8xl font-black tracking-tighter mb-4 bg-gradient-to-r from-white via-white to-white/60 bg-clip-text text-transparent">
-                  R—STUDIO
-                </div>
-                <div className="h-1 w-24 sm:w-32 bg-gradient-to-r from-[#3D4C3A] to-transparent rounded-full"></div>
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-8 mb-8">
+            {/* Left - Logo & Tagline */}
+            <div className="text-center lg:text-left space-y-4">
+              <div className="text-4xl sm:text-5xl font-black tracking-tighter bg-gradient-to-r from-white via-gray-300 to-white bg-clip-text text-transparent">
+                R—STUDIO
               </div>
-              <p className="text-lg sm:text-xl text-white/70 max-w-md leading-relaxed">
-                Exceptional studio living spaces in London's most desirable
-                locations. Where luxury meets lifestyle.
+              <p className="text-white/60 max-w-md text-sm">
+                Exceptional studio living in London's most desirable locations.
               </p>
-              <div className="flex gap-3 sm:gap-4">
-                {[Instagram, Linkedin, Twitter, Facebook].map((Icon, idx) => (
-                  <a
-                    key={idx}
-                    href="#"
-                    className="group w-12 h-12 sm:w-14 sm:h-14 border-2 border-white/20 rounded-2xl flex items-center justify-center hover:bg-gradient-to-br hover:from-[#3D4C3A] hover:to-[#2d3d2a] hover:border-[#3D4C3A] transition-all duration-300 hover:scale-110"
-                  >
-                    <Icon
-                      size={20}
-                      className="group-hover:scale-110 transition-transform"
-                    />
-                  </a>
-                ))}
-              </div>
-              <div className="pt-6 sm:pt-8 space-y-3">
-                <a
-                  href="mailto:hello@rstudio.london"
-                  className="flex items-center gap-3 text-white/80 hover:text-white transition-colors group"
-                >
-                  <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center group-hover:bg-[#3D4C3A] transition-colors">
-                    <Mail size={18} />
-                  </div>
-                  <span className="font-medium">hello@rstudio.london</span>
-                </a>
-                <a
-                  href="tel:+442012345678"
-                  className="flex items-center gap-3 text-white/80 hover:text-white transition-colors group"
-                >
-                  <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center group-hover:bg-[#3D4C3A] transition-colors">
-                    <Phone size={18} />
-                  </div>
-                  <span className="font-medium">+44 20 1234 5678</span>
-                </a>
-              </div>
             </div>
-            {/* Right */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-8 sm:gap-12">
-              <div>
-                <h4 className="font-black text-base sm:text-lg mb-4 sm:mb-6 text-white/90">
-                  Navigation
-                </h4>
-                <ul className="space-y-2 sm:space-y-3">
-                  {["Properties", "About", "Contact", "Blog"].map(
-                    (link, idx) => (
-                      <li key={idx}>
-                        <a
-                          href="#"
-                          className="text-sm sm:text-base text-white/60 hover:text-white transition-colors hover:translate-x-1 inline-block"
-                        >
-                          {link}
-                        </a>
-                      </li>
-                    )
-                  )}
-                </ul>
-              </div>
-              <div>
-                <h4 className="font-black text-base sm:text-lg mb-4 sm:mb-6 text-white/90">
-                  Legal
-                </h4>
-                <ul className="space-y-2 sm:space-y-3">
-                  {["Privacy", "Terms", "Cookies"].map((link, idx) => (
-                    <li key={idx}>
-                      <a
-                        href="#"
-                        className="text-sm sm:text-base text-white/60 hover:text-white transition-colors hover:translate-x-1 inline-block"
-                      >
-                        {link}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div>
-                <h4 className="font-black text-base sm:text-lg mb-4 sm:mb-6 text-white/90">
-                  Services
-                </h4>
-                <ul className="space-y-2 sm:space-y-3">
-                  {["Rentals", "Sales", "Management"].map((link, idx) => (
-                    <li key={idx}>
-                      <a
-                        href="#"
-                        className="text-sm sm:text-base text-white/60 hover:text-white transition-colors hover:translate-x-1 inline-block"
-                      >
-                        {link}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+
+            {/* Right - Social Links */}
+            <div className="flex items-center gap-3">
+              {[Instagram, Linkedin, Twitter, Facebook].map((Icon, idx) => (
+                <a
+                  key={idx}
+                  href="#"
+                  className="group w-12 h-12 border-2 border-white/20 rounded-xl flex items-center justify-center hover:bg-[#3D4C3A] hover:border-[#3D4C3A] transition-all hover:scale-110"
+                >
+                  <Icon
+                    size={18}
+                    className="group-hover:scale-110 transition-transform"
+                  />
+                </a>
+              ))}
             </div>
           </div>
-          <div className="border-t border-white/10 pt-6 sm:pt-8">
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-              <div className="text-white/40 text-xs sm:text-sm text-center sm:text-left">
-                © 2024 Rstudio London. All rights reserved. Designed with
-                passion.
+
+          {/* Contact Info */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-8 pb-8 border-b border-white/10">
+            <a
+              href="mailto:hello@rstudio.london"
+              className="flex items-center gap-2 text-white/70 hover:text-white transition-colors group text-sm"
+            >
+              <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center group-hover:bg-[#3D4C3A] transition-colors">
+                <Mail size={14} />
               </div>
-              <div className="flex items-center gap-4 text-xs sm:text-sm text-white/40">
-                <a href="#" className="hover:text-white transition-colors">
-                  Privacy
-                </a>
-                <span>•</span>
-                <a href="#" className="hover:text-white transition-colors">
-                  Terms
-                </a>
-                <span>•</span>
-                <a href="#" className="hover:text-white transition-colors">
-                  Sitemap
-                </a>
+              <span>hello@rstudio.london</span>
+            </a>
+            <a
+              href="tel:+442012345678"
+              className="flex items-center gap-2 text-white/70 hover:text-white transition-colors group text-sm"
+            >
+              <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center group-hover:bg-[#3D4C3A] transition-colors">
+                <Phone size={14} />
               </div>
+              <span>+44 20 1234 5678</span>
+            </a>
+          </div>
+
+          {/* Bottom */}
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-white/40">
+            <div className="text-center sm:text-left">
+              © 2024 Rstudio London. All rights reserved.
+            </div>
+            <div className="flex items-center gap-4">
+              <a href="#" className="hover:text-white transition-colors">
+                Privacy
+              </a>
+              <span>•</span>
+              <a href="#" className="hover:text-white transition-colors">
+                Terms
+              </a>
             </div>
           </div>
         </div>
       </footer>
 
       {/* Styles */}
-      <style jsx>{`
+      <style>{`
         @keyframes slide-in-down {
           from {
             transform: translateY(-100%);
@@ -1213,13 +1118,13 @@ const Studio = () => {
         @keyframes float {
           0%,
           100% {
-            transform: translateY(0px) rotate(45deg);
+            transform: translateY(0px);
           }
           50% {
-            transform: translateY(-20px) rotate(45deg);
+            transform: translateY(-20px);
           }
         }
-        @keyframes marquee {
+        @keyframes marquee-fast {
           0% {
             transform: translateX(0);
           }
@@ -1227,12 +1132,15 @@ const Studio = () => {
             transform: translateX(-33.333%);
           }
         }
-        @keyframes scale-in {
-          from {
-            transform: scale(0);
+        @keyframes gradient-flow {
+          0%,
+          100% {
+            background-size: 200% 200%;
+            background-position: left center;
           }
-          to {
-            transform: scale(1);
+          50% {
+            background-size: 200% 200%;
+            background-position: right center;
           }
         }
         .animate-slide-in-down {
@@ -1256,11 +1164,11 @@ const Studio = () => {
         .animate-float {
           animation: float 6s ease-in-out infinite;
         }
-        .animate-marquee {
-          animation: marquee 30s linear infinite;
+        .animate-marquee-fast {
+          animation: marquee-fast 15s linear infinite;
         }
-        .animate-scale-in {
-          animation: scale-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        .animate-gradient-flow {
+          animation: gradient-flow 3s ease infinite;
         }
         .animation-delay-200 {
           animation-delay: 200ms;
@@ -1270,6 +1178,9 @@ const Studio = () => {
         }
         .animation-delay-600 {
           animation-delay: 600ms;
+        }
+        .animation-delay-2000 {
+          animation-delay: 2000ms;
         }
         .scrollbar-hide::-webkit-scrollbar {
           display: none;
