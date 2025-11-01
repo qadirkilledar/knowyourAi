@@ -15,8 +15,7 @@ router.get("/", async (req, res) => {
     if (status) query.status = status;
 
     let sortOptions = { createdAt: -1 };
-    if (sort === "views") sortOptions = { views: -1 };
-    if (sort === "likes") sortOptions = { likes: -1 };
+    if (sort === "name") sortOptions = { name: 1 };
 
     const studios = await Studio.find(query).sort(sortOptions);
 
@@ -51,10 +50,6 @@ router.get("/:id", async (req, res) => {
         message: "Studio not found",
       });
     }
-
-    // Increment views
-    studio.views += 1;
-    await studio.save();
 
     res.set({
       "Access-Control-Allow-Origin": "*",
@@ -211,40 +206,6 @@ router.delete("/:id", async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Error deleting studio",
-      error: error.message,
-    });
-  }
-});
-
-// @route   PUT /api/studios/:id/like
-// @desc    Like/Unlike studio
-// @access  Public
-router.put("/:id/like", async (req, res) => {
-  try {
-    const studio = await Studio.findById(req.params.id);
-
-    if (!studio) {
-      return res.status(404).json({
-        success: false,
-        message: "Studio not found",
-      });
-    }
-
-    studio.likes += 1;
-    await studio.save();
-
-    res.set({
-      "Access-Control-Allow-Origin": "*",
-    });
-
-    res.json({
-      success: true,
-      data: studio,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Error updating likes",
       error: error.message,
     });
   }

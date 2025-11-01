@@ -12,17 +12,6 @@ const studioSchema = new mongoose.Schema(
       required: [true, "Location is required"],
       trim: true,
     },
-    fullLocation: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    type: {
-      type: String,
-      required: true,
-      enum: ["Studio", "Apartment", "Loft", "Penthouse"],
-      default: "Studio",
-    },
     size: {
       type: Number,
       required: [true, "Size is required"],
@@ -72,14 +61,6 @@ const studioSchema = new mongoose.Schema(
     featured: {
       type: Boolean,
       default: false,
-    },
-    views: {
-      type: Number,
-      default: 0,
-    },
-    likes: {
-      type: Number,
-      default: 0,
     },
     status: {
       type: String,

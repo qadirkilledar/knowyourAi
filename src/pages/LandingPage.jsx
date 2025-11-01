@@ -603,7 +603,7 @@ const Studio = () => {
                   <div className="flex items-center gap-3 text-[#3D4C3A]/70">
                     <MapPin size={24} />
                     <span className="text-lg font-medium">
-                      {activeStudio.fullLocation}
+                      {activeStudio.location}
                     </span>
                   </div>
                   <div className="grid grid-cols-4 gap-4">
@@ -801,7 +801,7 @@ const Studio = () => {
                 </h1>
                 <div className="flex items-center gap-2 text-[#3D4C3A]/70">
                   <MapPin size={18} />
-                  <span className="text-sm">{activeStudio.fullLocation}</span>
+                  <span className="text-sm">{activeStudio.location}</span>
                 </div>
 
                 {/* IMPROVED Stats  */}

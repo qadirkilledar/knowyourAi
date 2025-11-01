@@ -15,8 +15,6 @@ import {
   Square,
   Bed,
   Bath,
-  Eye,
-  Heart,
   Search,
   Filter,
   Menu,
@@ -43,8 +41,6 @@ const Admin = () => {
   const [formData, setFormData] = useState({
     name: "",
     location: "",
-    fullLocation: "",
-    type: "Studio",
     size: "",
     beds: 1,
     baths: 1,
@@ -277,8 +273,6 @@ const Admin = () => {
     setFormData({
       name: studio.name,
       location: studio.location,
-      fullLocation: studio.fullLocation,
-      type: studio.type,
       size: studio.size,
       beds: studio.beds,
       baths: studio.baths,
@@ -321,8 +315,6 @@ const Admin = () => {
     setFormData({
       name: "",
       location: "",
-      fullLocation: "",
-      type: "Studio",
       size: "",
       beds: 1,
       baths: 1,
@@ -591,18 +583,6 @@ const Admin = () => {
                         </div>
                       </div>
                     </div>
-
-                    {/* Stats */}
-                    <div className="absolute bottom-4 left-4 flex items-center gap-3">
-                      <div className="px-3 py-1.5 bg-black/70 backdrop-blur-sm text-white rounded-full text-xs font-bold flex items-center gap-1">
-                        <Eye size={12} />
-                        {studio.views || 0}
-                      </div>
-                      <div className="px-3 py-1.5 bg-black/70 backdrop-blur-sm text-white rounded-full text-xs font-bold flex items-center gap-1">
-                        <Heart size={12} />
-                        {studio.likes || 0}
-                      </div>
-                    </div>
                   </div>
 
                   {/* Content */}
@@ -819,47 +799,12 @@ const Admin = () => {
 
                     <div>
                       <label className="block text-sm font-bold text-gray-700 mb-2">
-                        Type *
-                      </label>
-                      <select
-                        name="type"
-                        value={formData.type}
-                        onChange={handleInputChange}
-                        required
-                        disabled={uploading}
-                        className="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl font-semibold focus:border-gray-900 focus:bg-white transition-all outline-none disabled:opacity-50"
-                      >
-                        <option value="Studio">Studio</option>
-                        <option value="Apartment">Apartment</option>
-                        <option value="Loft">Loft</option>
-                        <option value="Penthouse">Penthouse</option>
-                      </select>
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-bold text-gray-700 mb-2">
                         Location *
                       </label>
                       <input
                         type="text"
                         name="location"
                         value={formData.location}
-                        onChange={handleInputChange}
-                        required
-                        disabled={uploading}
-                        className="w-full px-4 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl font-semibold focus:border-gray-900 focus:bg-white transition-all outline-none disabled:opacity-50"
-                        placeholder="e.g., Shoreditch"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-bold text-gray-700 mb-2">
-                        Full Location *
-                      </label>
-                      <input
-                        type="text"
-                        name="fullLocation"
-                        value={formData.fullLocation}
                         onChange={handleInputChange}
                         required
                         disabled={uploading}
